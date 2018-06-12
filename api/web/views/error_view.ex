@@ -2,11 +2,11 @@ defmodule IntoTheBookmarks.ErrorView do
   use IntoTheBookmarks.Web, :view
 
   def render("404.json", _assigns) do
-    %{errors: %{detail: "Page not found"}}
+    %{errors: %{detail: "Endpoint not found"}}
   end
 
   def render("500.json", _assigns) do
-    %{errors: %{detail: "Internal server error"}}
+    %{errors: %{detail: "Internal server error :("}}
   end
 
   def render("401.json", %{message: message}) do
