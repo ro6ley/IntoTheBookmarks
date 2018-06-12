@@ -56,13 +56,14 @@ defmodule IntoTheBookmarks.UserController do
   def sign_in(conn, %{"email" => email, "password" => password}) do
     case authenticate_user(email, password) do
       {:ok, user} ->
-        IO.inspect user
         conn
+        |> put_session(:current_user_id, user.id)
         |> put_status(:ok)
         |> render(IntoTheBookmarks.UserView, "sign_in.json", user: user)
 
       {:error, message} ->
         conn
+        |> delete_session(:current_user_id)
         |> put_status(:unauthorized)
         |> render(IntoTheBookmarks.ErrorView, "401.json", message: message)
     end
