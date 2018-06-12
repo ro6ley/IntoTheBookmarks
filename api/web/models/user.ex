@@ -3,6 +3,7 @@ defmodule IntoTheBookmarks.User do
 
   schema "users" do
     field :email, :string
+    field :names, :string
     field :is_active, :boolean, default: false
     field :password, :string, virtual: true
     field :password_hash, :string
@@ -15,7 +16,7 @@ defmodule IntoTheBookmarks.User do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:email, :is_active, :password])
+    |> cast(params, [:email, :is_active, :password, :names])
     |> validate_required([:email, :is_active, :password])
     |> unique_constraint(:email)
     |> put_password_hash()
