@@ -2,7 +2,7 @@ defmodule IntoTheBookmarks.ErrorView do
   use IntoTheBookmarks.Web, :view
 
   def render("404.json", _assigns) do
-    %{errors: %{detail: "Endpoint not found"}}
+    %{errors: %{detail: "Not found"}}
   end
 
   def render("500.json", _assigns) do
