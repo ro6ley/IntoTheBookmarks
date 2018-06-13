@@ -7,6 +7,8 @@ defmodule IntoTheBookmarks.User do
     field :is_active, :boolean, default: false
     field :password, :string, virtual: true
     field :password_hash, :string
+    has_many :bookmarks, IntoTheBookmarks.Bookmark
+    has_many :categories, IntoTheBookmarks.Category
 
     timestamps()
   end
