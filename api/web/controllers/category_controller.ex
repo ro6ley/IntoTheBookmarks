@@ -6,20 +6,19 @@ defmodule IntoTheBookmarks.CategoryController do
 
   def index(conn, _params) do
     categories = Repo.all(from c in Category, preload: [:bookmarks, :user])
-    render(conn, "index.json", categories)
+    render(conn, "index.json", categories: categories)
   end
 
   def create(conn, %{"category" => category_params}) do
-    IO.inspect category_params
-    changeset = Category.changeset(%Category{}, category_params)
+    user_id = get_session(conn, :current_user_id)
+    changeset = Category.changeset(%Category{}, Map.put(category_params, "user_id", user_id))
 
     case Repo.insert(changeset) do
       {:ok, category} ->
         conn
         |> put_status(:created)
         |> put_resp_header("location", category_path(conn, :show, category))
-        |> render("show.json", category: category)
-        # |> render("show.json", category: Map.put(category, :bookmarks, []))
+        |> render("show.json", category: Map.put(category, :bookmarks, []))
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
@@ -28,16 +27,10 @@ defmodule IntoTheBookmarks.CategoryController do
   end
 
   def show(conn, %{"id" => id}) do
-    category = Repo.get!(Category, id)
-    bookmarks = Repo.all(
-      from bk in Bookmark,
-      where: bk.category_id == ^id,
-      select: bk)
-    if Enum.any?(bookmarks) == true do
-      render(conn, "show.json", category: Map.put(category, :bookmarks, bookmarks))
-    else
-      render(conn, "show.json", category: Map.put(category, :bookmarks, []))
-    end
+    category = Repo.get!(Category, id,)
+               |> Repo.preload(:bookmarks)
+
+    render(conn, "show.json", category: category)
   end
 
   def update(conn, %{"id" => id, "category" => category_params}) do
