@@ -5,7 +5,7 @@ defmodule IntoTheBookmarks.Category do
     field :category_name, :string
     field :category_notes, :string
     belongs_to :user, IntoTheBookmarks.User, foreign_key: :user_id
-    has_many :bookmarks, IntoTheBookmarks.Bookmark, fore
+    has_many :bookmarks, IntoTheBookmarks.Bookmark
 
     timestamps()
   end
@@ -15,7 +15,7 @@ defmodule IntoTheBookmarks.Category do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:category_name, :category_notes, :bookmarks])
+    |> cast(params, [:category_name, :category_notes, :user_id])
     |> validate_required([:category_name, :category_notes])
   end
 end
