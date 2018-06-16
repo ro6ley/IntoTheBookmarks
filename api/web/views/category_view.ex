@@ -4,7 +4,6 @@ defmodule IntoTheBookmarks.CategoryView do
   alias IntoTheBookmarks.BookmarkView
 
   def render("index.json", %{categories: categories}) do
-    IO.inspect categories
     %{data: render_many(categories, IntoTheBookmarks.CategoryView, "category.json")}
   end
 
