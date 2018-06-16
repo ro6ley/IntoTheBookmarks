@@ -5,7 +5,10 @@ defmodule IntoTheBookmarks.CategoryController do
   alias IntoTheBookmarks.Bookmark
 
   def index(conn, _params) do
-    categories = Repo.all(from c in Category, preload: [:bookmarks, :user])
+    user_id = get_session(conn, :current_user_id)
+    categories = Repo.all(from c in Category,
+                          where: c.user_id == ^user_id,
+                          preload: [:bookmarks, :user])
     render(conn, "index.json", categories: categories)
   end
 
@@ -27,7 +30,7 @@ defmodule IntoTheBookmarks.CategoryController do
   end
 
   def show(conn, %{"id" => id}) do
-    category = Repo.get!(Category, id,)
+    category = Repo.get!(Category, id)
                |> Repo.preload(:bookmarks)
 
     render(conn, "show.json", category: category)
