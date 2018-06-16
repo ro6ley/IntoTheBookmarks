@@ -30,14 +30,16 @@ defmodule IntoTheBookmarks.CategoryController do
   end
 
   def show(conn, %{"id" => id}) do
-    category = Repo.get!(Category, id)
+    user_id = get_session(conn, :current_user_id)
+    category = Repo.get_by!(Category, id: id, user_id: user_id)
                |> Repo.preload(:bookmarks)
 
     render(conn, "show.json", category: category)
   end
 
   def update(conn, %{"id" => id, "category" => category_params}) do
-    category = Repo.get!(Category, id)
+    user_id = get_session(conn, :current_user_id)
+    category = Repo.get_by!(Category, id: id, user_id: user_id)
     changeset = Category.changeset(category, category_params)
     bookmarks = Repo.all(
       from bk in Bookmark,
@@ -55,7 +57,8 @@ defmodule IntoTheBookmarks.CategoryController do
   end
 
   def delete(conn, %{"id" => id}) do
-    category = Repo.get!(Category, id)
+    user_id = get_session(conn, :current_user_id)
+    category = Repo.get_by!(Category, id: id, user_id: user_id)
 
     # Here we use delete! (with a bang) because we expect
     # it to always work (and if it does not, it will raise).
