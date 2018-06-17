@@ -6,7 +6,7 @@ defmodule IntoTheBookmarks.ErrorViewTest do
 
   test "renders 404.json" do
     assert render(IntoTheBookmarks.ErrorView, "404.json", []) ==
-           %{errors: %{detail: "Page not found"}}
+           %{errors: %{detail: "Not found"}}
   end
 
   test "render 500.json" do
