@@ -11,11 +11,11 @@ defmodule IntoTheBookmarks.ErrorViewTest do
 
   test "render 500.json" do
     assert render(IntoTheBookmarks.ErrorView, "500.json", []) ==
-           %{errors: %{detail: "Internal server error"}}
+           %{errors: %{detail: "Internal server error :("}}
   end
 
   test "render any other" do
     assert render(IntoTheBookmarks.ErrorView, "505.json", []) ==
-           %{errors: %{detail: "Internal server error"}}
+           %{errors: %{detail: "Internal server error :("}}
   end
 end
