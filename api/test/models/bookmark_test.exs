@@ -3,7 +3,7 @@ defmodule IntoTheBookmarks.BookmarkTest do
 
   alias IntoTheBookmarks.Bookmark
 
-  @valid_attrs %{bookmark_notes: "some bookmark_notes", bookmark_title: "some bookmark_title", bookmark_url: "some bookmark_url"}
+  @valid_attrs %{bookmark_notes: "some bookmark_notes", bookmark_title: "some bookmark_title", bookmark_url: "some bookmark_url", user_id: 1, category_id: 1}
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do
