@@ -2,12 +2,14 @@ defmodule IntoTheBookmarks.CategoryControllerTest do
   use IntoTheBookmarks.ConnCase
 
   alias IntoTheBookmarks.Category
+  alias IntoTheBookmarks.User
   @valid_attrs %{category_name: "some category_name", category_notes: "some category_notes"}
   @invalid_attrs %{}
 
   setup %{conn: conn} do
+    user = Repo.insert! %User{email: "some content", is_active: true, password: "somepassword"}
     conn = conn
-      |> Plug.Test.init_test_session(current_user_id: 1)
+      |> Plug.Test.init_test_session(current_user_id: user.id)
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
   end
 
