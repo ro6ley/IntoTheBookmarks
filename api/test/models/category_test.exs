@@ -3,7 +3,7 @@ defmodule IntoTheBookmarks.CategoryTest do
 
   alias IntoTheBookmarks.Category
 
-  @valid_attrs %{category_name: "some category_name", category_notes: "some category_notes"}
+  @valid_attrs %{category_name: "some category_name", category_notes: "some category_notes", user_id: 1}
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do
