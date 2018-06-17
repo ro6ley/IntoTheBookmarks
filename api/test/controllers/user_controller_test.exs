@@ -6,6 +6,8 @@ defmodule IntoTheBookmarks.UserControllerTest do
   @invalid_attrs %{email: nil, is_active: nil, password: nil}
 
   setup %{conn: conn} do
+    conn = conn
+      |> Plug.Test.init_test_session(current_user_id: 1)
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
   end
 
