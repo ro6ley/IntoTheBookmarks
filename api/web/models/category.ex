@@ -16,6 +16,6 @@ defmodule IntoTheBookmarks.Category do
   def changeset(struct, params \\ %{}) do
     struct
     |> cast(params, [:category_name, :category_notes, :user_id])
-    |> validate_required([:category_name, :category_notes])
+    |> validate_required([:category_name, :category_notes, :user_id])
   end
 end
