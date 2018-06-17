@@ -13,15 +13,13 @@ defmodule IntoTheBookmarks.UserControllerTest do
 
   test "lists all entries on index", %{conn: conn} do
     conn = get conn, user_path(conn, :index)
-    assert json_response(conn, 200)["data"] == []
+    assert json_response(conn, 200)["users"] == []
   end
 
   test "shows chosen resource", %{conn: conn} do
     user = Repo.insert! %User{email: "some content"}
     conn = get conn, user_path(conn, :show, user)
-    assert json_response(conn, 200)["data"] == %{"id" => user.id,
-      "email" => user.email,
-      "is_active" => user.is_active}
+    assert match?(%{"id" => _, "email" => _, "is_active" => _}, json_response(conn, 200)["user"])
   end
 
   test "renders page not found when id is nonexistent", %{conn: conn} do
@@ -32,7 +30,7 @@ defmodule IntoTheBookmarks.UserControllerTest do
 
   test "creates and renders resource when data is valid", %{conn: conn} do
     conn = post conn, user_path(conn, :create), user: @valid_attrs
-    assert json_response(conn, 201)["data"]["id"]
+    assert json_response(conn, 201)["user"]["id"]
     user = Repo.get_by(User, %{email: "some content"})
     assert Repo.get_by(User, %{email: "some content", is_active: true})
     assert Bcrypt.verify_pass("somepassword", user.password_hash)
@@ -46,7 +44,7 @@ defmodule IntoTheBookmarks.UserControllerTest do
   test "updates and renders chosen resource when data is valid", %{conn: conn} do
     user = Repo.insert! %User{email: "some content"}
     conn = put conn, user_path(conn, :update, user), user: @valid_attrs
-    assert json_response(conn, 200)["data"]["id"]
+    assert json_response(conn, 200)["user"]["id"]
     assert Repo.get_by(User, %{email: "some content", is_active: true})
   end
 
