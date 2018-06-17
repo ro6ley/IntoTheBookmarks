@@ -25,15 +25,17 @@ defmodule IntoTheBookmarks.BookmarkControllerTest do
     category = Repo.insert! %Category{category_name: "some category_name", category_notes: "some category_notes", user_id: user_id}
     bookmark = Repo.insert!(Map.put(%Bookmark{}, :category_id, category.id) |> Map.put(:user_id, user_id))
     conn = get conn, "/api/categories/#{category.id}/bookmarks/", id: category.id
-    IO.inspect json_response(conn, 200)
     assert match?(
-        %{"id" => _,
-        "bookmark_title" => _,
-        "bookmark_url" => _,
-        "bookmark_notes" => _,
-        "category_id" => _,
-        "user_id" => _
-        },
+        [
+          %{
+            "id" => _,
+            "bookmark_title" => _,
+            "bookmark_url" => _,
+            "bookmark_notes" => _,
+            "category_id" => _,
+            "user_id" => _
+          }
+        ],
         json_response(conn, 200)["data"])
   end
 
