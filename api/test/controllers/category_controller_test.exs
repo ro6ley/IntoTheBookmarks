@@ -19,12 +19,14 @@ defmodule IntoTheBookmarks.CategoryControllerTest do
   end
 
   test "shows chosen resource", %{conn: conn} do
-    category = Repo.insert! %Category{}
+    user_id = get_session(conn, :current_user_id)
+    category = Repo.insert! Map.put(%Category{}, :user_id, user_id)
     conn = get conn, category_path(conn, :show, category)
     assert json_response(conn, 200)["data"] == %{"id" => category.id,
       "category_name" => category.category_name,
       "category_notes" => category.category_notes,
-      "user_id" => category.user_id}
+      "user_id" => category.user_id,
+      "bookmarks" => []}
   end
 
   test "renders page not found when id is nonexistent", %{conn: conn} do
@@ -45,20 +47,23 @@ defmodule IntoTheBookmarks.CategoryControllerTest do
   end
 
   test "updates and renders chosen resource when data is valid", %{conn: conn} do
-    category = Repo.insert! %Category{}
+    user_id = get_session(conn, :current_user_id)
+    category = Repo.insert! Map.put(%Category{}, :user_id, user_id)
     conn = put conn, category_path(conn, :update, category), category: @valid_attrs
     assert json_response(conn, 200)["data"]["id"]
     assert Repo.get_by(Category, @valid_attrs)
   end
 
   test "does not update chosen resource and renders errors when data is invalid", %{conn: conn} do
-    category = Repo.insert! %Category{}
+    user_id = get_session(conn, :current_user_id)
+    category = Repo.insert! Map.put(%Category{}, :user_id, user_id)
     conn = put conn, category_path(conn, :update, category), category: @invalid_attrs
     assert json_response(conn, 422)["errors"] != %{}
   end
 
   test "deletes chosen resource", %{conn: conn} do
-    category = Repo.insert! %Category{}
+    user_id = get_session(conn, :current_user_id)
+    category = Repo.insert! Map.put(%Category{}, :user_id, user_id)
     conn = delete conn, category_path(conn, :delete, category)
     assert response(conn, 204)
     refute Repo.get(Category, category.id)
