@@ -9,14 +9,14 @@ defmodule IntoTheBookmarks.BookmarkController do
     category = Repo.get!(Category, category_id)
     bookmarks = Repo.all(from b in Bookmark,
                          where: b.user_id == ^user_id,
-                         where: b.category_id == ^category_id)
+                         where: b.category_id == ^category.id)
     render(conn, "index.json", bookmarks: bookmarks)
   end
 
   def create(conn, %{"bookmark" => bookmark_params, "category_id" => category_id}) do
     category = Repo.get!(Category, category_id)
     user_id = get_session(conn, :current_user_id)
-    changeset = Bookmark.changeset(%Bookmark{}, Map.put(bookmark_params, "category_id", category_id) |> Map.put("user_id", user_id))
+    changeset = Bookmark.changeset(%Bookmark{}, Map.put(bookmark_params, "category_id", category.id) |> Map.put("user_id", user_id))
 
     case Repo.insert(changeset) do
       {:ok, bookmark} ->
