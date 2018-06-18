@@ -24,18 +24,16 @@ defmodule IntoTheBookmarks.BookmarkControllerTest do
     user_id = get_session(conn, :current_user_id)
     category = Repo.insert! %Category{category_name: "some category_name", category_notes: "some category_notes", user_id: user_id}
     bookmark = Repo.insert!(Map.put(%Bookmark{}, :category_id, category.id) |> Map.put(:user_id, user_id))
-    conn = get conn, "/api/categories/#{category.id}/bookmarks/", id: category.id
+    conn = get conn, "/api/categories/#{category.id}/bookmarks/#{bookmark.id}", category_id: category.id
     assert match?(
-        [
-          %{
-            "id" => _,
-            "bookmark_title" => _,
-            "bookmark_url" => _,
-            "bookmark_notes" => _,
-            "category_id" => _,
-            "user_id" => _
-          }
-        ],
+      %{
+          "id" => _,
+          "bookmark_title" => _,
+          "bookmark_url" => _,
+          "bookmark_notes" => _,
+          "category_id" => _,
+          "user_id" => _
+        },
         json_response(conn, 200)["data"])
   end
 
@@ -47,8 +45,8 @@ defmodule IntoTheBookmarks.BookmarkControllerTest do
 
   test "creates and renders resource when data is valid", %{conn: conn} do
     user_id = get_session(conn, :current_user_id)
-    category = Repo.insert! %Category{category_name: "some category_name", category_notes: "some category_notes", user_id: user_id}
-    conn = post conn, "/api/categories/#{category.id}/bookmarks", %{bookmark: @valid_attrs, id: category.id}
+    category = Repo.insert! %Category{category_name: "some category_name", category_notes: "some category_notes"}
+    conn = post conn, category_bookmark_path(conn, :create, category.id), bookmark: @valid_attrs
     assert json_response(conn, 201)["data"]["id"]
     assert Repo.get_by(Bookmark, @valid_attrs)
   end
@@ -64,22 +62,24 @@ defmodule IntoTheBookmarks.BookmarkControllerTest do
     user_id = get_session(conn, :current_user_id)
     category = Repo.insert! %Category{category_name: "some category_name", category_notes: "some category_notes", user_id: user_id}
     bookmark = Repo.insert! (Map.put(%Bookmark{}, :user_id, user_id) |> Map.put(:category_id, category.id))
-    conn = put conn, bookmark_path(conn, :update, bookmark), bookmark: @valid_attrs
+    conn = put conn, category_bookmark_path(conn, :update, category.id, bookmark), bookmark: @valid_attrs
     assert json_response(conn, 200)["data"]["id"]
     assert Repo.get_by(Bookmark, @valid_attrs)
   end
 
   test "does not update chosen resource and renders errors when data is invalid", %{conn: conn} do
     user_id = get_session(conn, :current_user_id)
-    bookmark = Repo.insert! Map.put(%Bookmark{}, :user_id, user_id)
-    conn = put conn, bookmark_path(conn, :update, bookmark), bookmark: @invalid_attrs
+    category = Repo.insert! %Category{category_name: "some category_name", category_notes: "some category_notes", user_id: user_id}
+    bookmark = Repo.insert! (Map.put(%Bookmark{}, :user_id, user_id) |> Map.put(:category_id, category.id))
+    conn = put conn, category_bookmark_path(conn, :update, category.id, bookmark), bookmark: @invalid_attrs
     assert json_response(conn, 422)["errors"] != %{}
   end
 
   test "deletes chosen resource", %{conn: conn} do
     user_id = get_session(conn, :current_user_id)
-    bookmark = Repo.insert! Map.put(%Bookmark{}, :user_id, user_id)
-    conn = delete conn, bookmark_path(conn, :delete, bookmark)
+    category = Repo.insert! %Category{category_name: "some category_name", category_notes: "some category_notes", user_id: user_id}
+    bookmark = Repo.insert! (Map.put(%Bookmark{}, :user_id, user_id) |> Map.put(:category_id, category.id))
+    conn = delete conn, category_bookmark_path(conn, :delete, category.id, bookmark)
     assert response(conn, 204)
     refute Repo.get(Bookmark, bookmark.id)
   end
