@@ -44,7 +44,6 @@ defmodule IntoTheBookmarks.BookmarkControllerTest do
   end
 
   test "creates and renders resource when data is valid", %{conn: conn} do
-    user_id = get_session(conn, :current_user_id)
     category = Repo.insert! %Category{category_name: "some category_name", category_notes: "some category_notes"}
     conn = post conn, category_bookmark_path(conn, :create, category.id), bookmark: @valid_attrs
     assert json_response(conn, 201)["data"]["id"]
