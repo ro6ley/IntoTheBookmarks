@@ -19,11 +19,11 @@ defmodule IntoTheBookmarks.Router do
   scope "/api", IntoTheBookmarks do
     pipe_through([:api, :api_auth])
     resources "/users", UserController, except: [:new, :edit]
-    resources "/categories/:id/bookmarks", BookmarkController, except: [:new, :edit]
+    # resources "/categories/:id/bookmarks", BookmarkController, except: [:new, :edit]
     resources "/categories", CategoryController, except: [:new, :edit]
-    # resources "/categories", CategoryController do
-    #   resources "/bookmarks", BookmarkController, except: [:new, :edit]
-    # end
+    resources "/categories", CategoryController do
+      resources "/bookmarks", BookmarkController, except: [:new, :edit]
+    end
   end
 
   # Plug function
