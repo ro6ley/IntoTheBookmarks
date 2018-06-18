@@ -4,14 +4,16 @@ defmodule IntoTheBookmarks.BookmarkController do
   alias IntoTheBookmarks.Bookmark
   alias IntoTheBookmarks.Category
 
-  def index(conn, %{"id" => category_id}) do
+  def index(conn, %{"catgeory_id" => category_id}) do
     user_id = get_session(conn, :current_user_id)
     category = Repo.get!(Category, category_id)
-    bookmarks = Repo.all(from b in Bookmark, where: b.user_id == ^user_id)
+    bookmarks = Repo.all(from b in Bookmark,
+                         where: b.user_id == ^user_id,
+                         where: b.category_id == ^category_id)
     render(conn, "index.json", bookmarks: bookmarks)
   end
 
-  def create(conn, %{"bookmark" => bookmark_params, "id" => category_id}) do
+  def create(conn, %{"bookmark" => bookmark_params, "category_id" => category_id}) do
     category = Repo.get!(Category, category_id)
     user_id = get_session(conn, :current_user_id)
     changeset = Bookmark.changeset(%Bookmark{}, Map.put(bookmark_params, "category_id", category_id) |> Map.put("user_id", user_id))
@@ -20,7 +22,7 @@ defmodule IntoTheBookmarks.BookmarkController do
       {:ok, bookmark} ->
         conn
         |> put_status(:created)
-        |> put_resp_header("location", bookmark_path(conn, :show, bookmark))
+        |> put_resp_header("location", category_bookmark_path(conn, :show, category_id, bookmark))
         |> render("show.json", bookmark: bookmark)
       {:error, changeset} ->
         conn
