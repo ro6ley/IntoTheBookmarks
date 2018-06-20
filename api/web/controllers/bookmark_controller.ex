@@ -4,7 +4,7 @@ defmodule IntoTheBookmarks.BookmarkController do
   alias IntoTheBookmarks.Bookmark
   alias IntoTheBookmarks.Category
 
-  def index(conn, %{"catgeory_id" => category_id}) do
+  def index(conn, %{"category_id" => category_id}) do
     user_id = get_session(conn, :current_user_id)
     category = Repo.get!(Category, category_id)
     bookmarks = Repo.all(from b in Bookmark,
