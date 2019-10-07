@@ -1,3 +1,4 @@
+![](https://tokei.rs/b1/github/ro6ley/IntoTheBookmarks?category=code)
 ## Into The Bookmarks
 
 All your bookmarks in one place.
